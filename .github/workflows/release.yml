@@ -71,10 +71,11 @@ jobs:
         shell: bash
         run: |
           ARTIFACT="voicebox-patch-v${VERSION}-${{ matrix.artifact-suffix }}"
+          echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            cp target/${{ matrix.target }}/release/voicebox-patch-rust.exe "${ARTIFACT}"
+            cp target/${{ matrix.target }}/release/voicebox-patch.exe "${ARTIFACT}"
           else
-            cp target/${{ matrix.target }}/release/voicebox-patch-rust "${ARTIFACT}"
+            cp target/${{ matrix.target }}/release/voicebox-patch "${ARTIFACT}"
           fi
           echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
 
