@@ -4,6 +4,8 @@ use std::fs;
 use std::io::{self, Write};
 #[cfg(target_os = "macos")]
 use std::path::PathBuf;
+#[cfg(target_os = "macos")]
+use std::process::Command;
 #[cfg(target_os = "windows")]
 use std::process::Command;
 use std::thread;
@@ -134,12 +136,33 @@ fn persist_hf_endpoint(endpoint: &str) -> io::Result<()> {
 
 #[cfg(target_os = "macos")]
 fn persist_hf_endpoint(endpoint: &str) -> io::Result<()> {
-    let home = env::var_os("HOME")
-        .map(PathBuf::from)
-        .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "未找到 HOME 目录"))?;
+    let gui_flag = true;
+    if gui_flag {
+        return set_gui_environment_variable(endpoint);
+    } else {
+        let home = env::var_os("HOME")
+            .map(PathBuf::from)
+            .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "未找到 HOME 目录"))?;
 
-    let shell_profile = preferred_shell_profile(&home);
-    upsert_export_line(&shell_profile, endpoint)
+        let shell_profile = preferred_shell_profile(&home);
+        return upsert_export_line(&shell_profile, endpoint);
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn set_gui_environment_variable(endpoint: &str) -> io::Result<()> {
+    let status = Command::new("launchctl")
+        .arg("setenv")
+        .arg(ENV_NAME)
+        .arg(endpoint)
+        .status()?;
+
+    if status.success() {
+        println!("已成功切换区域");
+        Ok(())
+    } else {
+        Err(io::Error::new(io::ErrorKind::Other, "切换区域失败！"))
+    }
 }
 
 #[cfg(target_os = "macos")]
