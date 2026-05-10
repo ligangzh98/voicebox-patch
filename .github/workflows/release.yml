@@ -15,20 +15,20 @@ jobs:
         include:
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-            artifact-suffix: pansou-linux-amd64
+            artifact-suffix: voicebox-patch-linux-amd64
           - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
-            artifact-suffix: pansou-linux-arm64
+            artifact-suffix: voicebox-patch-linux-arm64
             use-cross: true
           - target: x86_64-apple-darwin
             os: macos-latest
-            artifact-suffix: pansou-darwin-amd64
+            artifact-suffix: voicebox-patch-darwin-amd64
           - target: aarch64-apple-darwin
             os: macos-latest
-            artifact-suffix: pansou-darwin-arm64
+            artifact-suffix: voicebox-patch-darwin-arm64
           - target: x86_64-pc-windows-msvc
             os: windows-latest
-            artifact-suffix: pansou-windows-amd64.exe
+            artifact-suffix: voicebox-patch-windows-amd64.exe
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -70,11 +70,11 @@ jobs:
       - name: 重命名产物
         shell: bash
         run: |
-          ARTIFACT="pansou-v${VERSION}-${{ matrix.artifact-suffix }}"
+          ARTIFACT="voicebox-patch-v${VERSION}-${{ matrix.artifact-suffix }}"
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            cp target/${{ matrix.target }}/release/pansou-rust.exe "${ARTIFACT}"
+            cp target/${{ matrix.target }}/release/voicebox-patch-rust.exe "${ARTIFACT}"
           else
-            cp target/${{ matrix.target }}/release/pansou-rust "${ARTIFACT}"
+            cp target/${{ matrix.target }}/release/voicebox-patch-rust "${ARTIFACT}"
           fi
           echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
 
