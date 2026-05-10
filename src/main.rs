@@ -32,7 +32,6 @@ fn main() {
     match prompt_region() {
         Ok(region) => {
             let endpoint = region.endpoint();
-
             match persist_hf_endpoint(endpoint) {
                 Ok(()) => {
                     println!();
